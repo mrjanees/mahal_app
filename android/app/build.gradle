@@ -56,3 +56,12 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.0"
+
+    // Exclude old Kotlin stdlib versions to avoid conflicts
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0") {
+        exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk8"
+    }
+}

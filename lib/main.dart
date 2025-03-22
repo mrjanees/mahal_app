@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:mahal_app/bloc/login/login_bloc.dart';
+import 'package:mahal_app/bloc/subscription/subscription_bloc.dart';
+import 'package:mahal_app/core/color.dart';
+import 'package:mahal_app/core/router.dart';
+import 'package:mahal_app/service_locator.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  setupServiceLocator(); //
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   Future.delayed(
       const Duration(seconds: 2), () => FlutterNativeSplash.remove());
@@ -15,27 +23,28 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Velby',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => getIt<LoginBloc>()),
+        BlocProvider(create: (context) => getIt<SubscriptionBloc>())
+      ],
+      child: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: MaterialApp.router(
+          title: 'Mahal App',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+              useMaterial3: true,
+              appBarTheme: const AppBarTheme(
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: AppColors.primaryColor,
+                  statusBarIconBrightness: Brightness.light,
+                ),
+              )),
+          routerConfig: router,
+        ),
       ),
-      home: const MyHomePage(),
     );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary),
-        body: const SizedBox());
   }
 }

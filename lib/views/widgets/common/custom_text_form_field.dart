@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mahal_app/core/color.dart';
 
 class CustomTextField extends StatelessWidget {
   bool isThisFieldRequired;
@@ -16,6 +17,7 @@ class CustomTextField extends StatelessWidget {
   double strokeWidth;
   bool absorbingField;
   bool disableErrorText;
+  bool textCenter;
   CustomTextField(
       {required this.textEditingController,
       required this.name,
@@ -31,6 +33,7 @@ class CustomTextField extends StatelessWidget {
       this.validator,
       this.absorbingField = false,
       this.maxLength,
+      this.textCenter = false,
       super.key});
 
   @override
@@ -60,26 +63,39 @@ class CustomTextField extends StatelessWidget {
         onChanged: (value) => onChanged?.call(value),
         style: TextStyle(fontSize: textSize),
         decoration: InputDecoration(
+          border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(15)),
+          fillColor: const Color.fromARGB(255, 225, 245, 252),
+          filled: true,
           errorStyle: disableErrorText
               ? const TextStyle(height: 0.01, color: Colors.transparent)
               : null,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 23, horizontal: 13),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 13),
           counterText: '',
-          focusedErrorBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.red, width: strokeWidth)),
-          errorBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.red, width: strokeWidth)),
           focusedBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.grey, width: strokeWidth)),
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide.none, // Removes visible border when focused
+          ),
           enabledBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.grey, width: strokeWidth)),
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide.none, // Removes default border
+          ),
+          errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none
+              // Show red border on error
+              ),
+          focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none
+              // Show red border on focus error
+              ),
           hintText: name,
-          hintStyle: TextStyle(color: Colors.grey, fontSize: hintTextSize),
+          hintStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: hintTextSize,
+          ),
         ),
       ),
     );
