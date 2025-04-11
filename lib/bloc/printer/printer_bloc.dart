@@ -8,6 +8,7 @@ import 'package:mahal_app/core/apis.dart';
 import 'package:mahal_app/model/subscription/subscription_add.dart';
 import 'package:mahal_app/repositories/subscription_repo.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal_windows.dart';
 
 part 'printer_event.dart';
 part 'printer_state.dart';
@@ -19,6 +20,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     on<ConnectPrinter>(_onConnectPrinter);
     on<DisconnectPrinter>(_onDisconnectPrinter);
     on<PrintReceipt>(_printReceipt);
+    on<CheckConnection>(_onConnectionCheck);
   }
 
   Future<void> _onInitPrinter(
@@ -29,15 +31,18 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
       String platformVersion = await PrintBluetoothThermal.platformVersion;
       int batteryLevel = await PrintBluetoothThermal.batteryLevel;
       bool isBluetoothEnabled = await PrintBluetoothThermal.bluetoothEnabled;
+      bool connectionStatus = await PrintBluetoothThermal.connectionStatus;
       log("is Bluetooth On :$isBluetoothEnabled");
+      log("connection Status: $connectionStatus");
       emit(PrinterLoaded(
           platformVersion: platformVersion,
           batteryLevel: batteryLevel,
           isBluetoothEnabled: isBluetoothEnabled,
           pairedDevices: [],
-          isConnected: false,
+          isConnected: connectionStatus,
           message: "Bluetooth ${isBluetoothEnabled ? "enabled" : "disabled"}",
           macId: ""));
+      getConnectedBluetoothDevice();
     } catch (e) {
       emit(PrinterError(error: e.toString()));
     }
@@ -76,25 +81,52 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     }
   }
 
-  Future<void> _onConnectPrinter(
-      ConnectPrinter event, Emitter<PrinterState> emit) async {
+  Future<void> _onConnectionCheck(event, Emitter<PrinterState> emit) async {
     try {
       if (state is PrinterLoaded) {
-        final currentState = state as PrinterLoaded;
-
-        emit(PrinterLoading());
-        bool connected = await PrintBluetoothThermal.connect(
-            macPrinterAddress: event.macAddress);
-
-        emit(currentState.copyWith(
-          isConnected: connected,
-          message: connected ? "Connected to printer!" : "Failed to connect.",
-          macId: event.macAddress,
-        ));
+        final connectionStatus = await PrintBluetoothThermal.connectionStatus;
+        log("ConnectionSatus ${connectionStatus.toString()}");
+        if (!connectionStatus) {
+          await _onConnectPrinter(
+              ConnectPrinter(macAddress: event.macAddress), emit);
+        } else {
+          await _onDisconnectPrinter(DisconnectPrinter(), emit);
+        }
       } else {
+        log("status false");
         emit(PrinterError(error: "Cannot refresh devices. Invalid state."));
       }
     } catch (e) {
+      log(e.toString());
+      emit(PrinterError(error: e.toString()));
+    }
+  }
+
+  Future<void> _onConnectPrinter(
+      ConnectPrinter event, Emitter<PrinterState> emit) async {
+    log("on connect worked");
+    try {
+      if (state is PrinterLoaded) {
+        final connectionStatus = await PrintBluetoothThermal.connectionStatus;
+        log("ConnectionSatus ${connectionStatus.toString()}");
+        if (!connectionStatus) {
+          final currentState = state as PrinterLoaded;
+          emit(PrinterLoading());
+          bool connected = await PrintBluetoothThermal.connect(
+              macPrinterAddress: event.macAddress);
+          log("status ${connected.toString()}");
+          emit(currentState.copyWith(
+            isConnected: connected,
+            message: connected ? "Connected to printer!" : "Failed to connect.",
+            macId: event.macAddress,
+          ));
+        } else {}
+      } else {
+        log("status false");
+        emit(PrinterError(error: "Cannot refresh devices. Invalid state."));
+      }
+    } catch (e) {
+      log(e.toString());
       emit(PrinterError(error: e.toString()));
     }
   }
@@ -110,11 +142,28 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     ));
   }
 
+  Future<void> getConnectedBluetoothDevice() async {
+    bool isConnected = await PrintBluetoothThermal.connectionStatus;
+    if (isConnected) {
+      List<BluetoothInfo> pairedDevices =
+          await PrintBluetoothThermal.pairedBluetooths;
+      for (var device in pairedDevices) {
+        bool connected = await PrintBluetoothThermal.connectionStatus;
+        if (connected) {
+          log(device.name);
+        }
+      }
+    } else {
+      log("No device connected");
+    }
+  }
+
   FutureOr<void> _printReceipt(
       PrintReceipt event, Emitter<PrinterState> emit) async {
     final currentState = state as PrinterLoaded;
     bool connectionStatus = await PrintBluetoothThermal.connectionStatus;
     if (connectionStatus) {
+      log("Bluetooth connected");
       emit(PrinterLoading());
       final reponse =
           await SubscriptionRepository().addSubcription(event.receiptData);

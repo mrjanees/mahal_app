@@ -8,6 +8,14 @@ class InitPrinter extends PrinterEvent {}
 // Search for Bluetooth devices
 class SearchPrinters extends PrinterEvent {}
 
+class CheckConnection extends PrinterEvent {
+  final String macAddress;
+  CheckConnection({required this.macAddress});
+
+  @override
+  List<Object> get props => [macAddress];
+}
+
 // Connect to a Bluetooth printer
 class ConnectPrinter extends PrinterEvent {
   final String macAddress;

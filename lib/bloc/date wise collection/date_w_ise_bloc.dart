@@ -50,7 +50,8 @@ class DateWiseBloc extends Bloc<DateWiseEvent, DateWiseState> {
           emit(DateWiseLoaded(
             fromDate: currentState.fromDate,
             toDate: currentState.toDate,
-            collectionData: response,
+            collectionData: response.result ?? [],
+            total: response.total ?? 00,
           ));
         } else {
           emit(DateWiseFailure("No data found for selected dates."));
@@ -69,9 +70,10 @@ class DateWiseBloc extends Bloc<DateWiseEvent, DateWiseState> {
           fromDate: event.fromDate, toDate: event.toDate);
       if (response != null) {
         emit(DateWiseLoaded(
-          collectionData: response,
+          collectionData: response.result ?? [],
           fromDate: DateFormat("yyyy-MM-dd").parse(event.fromDate),
           toDate: DateFormat("yyyy-MM-dd").parse(event.toDate),
+          total: response.total ?? 00,
         ));
       } else {
         emit(DateWiseFailure("No data found for selected dates."));

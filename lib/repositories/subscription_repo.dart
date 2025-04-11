@@ -27,8 +27,14 @@ class SubscriptionRepository {
 
   Future<CommonResponse?> addSubcription(SubscriptionAdd addData) async {
     try {
-      final response = await dio.post(APIs.addSubscription,
-          queryParameters: addData.toJson());
+      final response = await dio.post(APIs.addSubscription, queryParameters: {
+        "houseno": addData.houseNo,
+        "type": addData.type,
+        "month": addData.month,
+        "year": addData.year,
+        "dateofcollection": addData.dateOfCollection,
+        "amount": addData.amount
+      });
       log(response.data.toString());
       if (response.statusCode == 200 || response.statusCode == 201) {
         return CommonResponse.fromJson(jsonDecode(response.data));
@@ -36,11 +42,12 @@ class SubscriptionRepository {
         return CommonResponse.fromJson(jsonDecode(response.data));
       }
     } on DioException catch (e) {
+      log(e.response.toString());
       return null;
     }
   }
 
-  Future<List<Result>?> getDateWiseCollection(
+  Future<HouseDetialsList?> getDateWiseCollection(
       {required String fromDate, required String toDate}) async {
     log("From Date: $fromDate");
     log("to Date: $toDate");
@@ -49,9 +56,9 @@ class SubscriptionRepository {
           queryParameters: {"datefrom": fromDate, "dateto": toDate});
       log(response.data.toString());
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return HouseDetialsList.fromJson(jsonDecode(response.data)).result;
+        return HouseDetialsList.fromJson(jsonDecode(response.data));
       } else {
-        return HouseDetialsList.fromJson(jsonDecode(response.data)).result;
+        return HouseDetialsList.fromJson(jsonDecode(response.data));
       }
     } on DioException catch (e) {
       log(e.toString());

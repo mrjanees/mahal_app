@@ -27,7 +27,7 @@ class DateWiseCollection extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(130),
+            preferredSize: const Size.fromHeight(150),
             child: CommonAppBar(
               backPress: () {
                 context.pop();
@@ -38,28 +38,51 @@ class DateWiseCollection extends StatelessWidget {
                 child: BlocBuilder<DateWiseBloc, DateWiseState>(
                   builder: (context, state) {
                     if (state is DateWiseLoaded) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      return Column(
                         children: [
-                          // From Date Selection
-                          CustomDateSelection(
-                            onTap: () => _pickFromDate(
-                                context, state.fromDate, state.toDate),
-                            title:
-                                DateFormat('yyyy-MM-dd').format(state.fromDate),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              // From Date Selection
+                              CustomDateSelection(
+                                onTap: () => _pickFromDate(
+                                    context, state.fromDate, state.toDate),
+                                title: DateFormat('yyyy-MM-dd')
+                                    .format(state.fromDate),
+                              ),
+                              Container(
+                                width: 10,
+                                height: 3,
+                                color: AppColors.primaryColor,
+                              ),
+                              // To Date Selection
+                              CustomDateSelection(
+                                onTap: () => _pickToDate(
+                                    context, state.fromDate, state.toDate),
+                                title: DateFormat('yyyy-MM-dd')
+                                    .format(state.toDate),
+                              ),
+                            ],
                           ),
-                          Container(
-                            width: 10,
-                            height: 3,
-                            color: AppColors.primaryColor,
+                          const SizedBox(
+                            height: 10,
                           ),
-                          // To Date Selection
-                          CustomDateSelection(
-                            onTap: () => _pickToDate(
-                                context, state.fromDate, state.toDate),
-                            title:
-                                DateFormat('yyyy-MM-dd').format(state.toDate),
-                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const CustomText(
+                                "Total RS: ",
+                                color: AppColors.primaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              CustomText(
+                                state.total.toString(),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              )
+                            ],
+                          )
                         ],
                       );
                     } else {

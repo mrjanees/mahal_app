@@ -1,4 +1,3 @@
-
 import 'package:mahal_app/model/subscription/house_details_list.dart';
 
 sealed class DateWiseState {}
@@ -11,23 +10,25 @@ class DateWiseLoaded extends DateWiseState {
   final DateTime fromDate;
   final DateTime toDate;
   final List<Result> collectionData; // Replace with your model
+  final int total;
 
   DateWiseLoaded({
     required this.fromDate,
     required this.toDate,
     required this.collectionData,
+    required this.total,
   });
 
-  DateWiseLoaded copyWith({
-    DateTime? fromDate,
-    DateTime? toDate,
-    List<Result>? collectionData, // Replace with your model
-  }) {
+  DateWiseLoaded copyWith(
+      {DateTime? fromDate,
+      DateTime? toDate,
+      List<Result>? collectionData, // Replace with your model
+      int? total}) {
     return DateWiseLoaded(
-      fromDate: fromDate ?? this.fromDate,
-      toDate: toDate ?? this.toDate,
-      collectionData: collectionData ?? this.collectionData,
-    );
+        fromDate: fromDate ?? this.fromDate,
+        toDate: toDate ?? this.toDate,
+        collectionData: collectionData ?? this.collectionData,
+        total: total ?? this.total);
   }
 }
 

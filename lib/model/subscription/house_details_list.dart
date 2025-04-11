@@ -1,13 +1,16 @@
 class HouseDetialsList {
   List<Result>? result;
-
-  HouseDetialsList({this.result});
+  int? total;
+  HouseDetialsList({this.result, this.total});
 
   HouseDetialsList.fromJson(Map<String, dynamic> json) {
     if (json["result"] is List) {
       result = json["result"] == null
           ? null
           : (json["result"] as List).map((e) => Result.fromJson(e)).toList();
+    }
+    if (json["total"] is int) {
+      total = json["total"];
     }
   }
 
