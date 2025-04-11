@@ -182,6 +182,8 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
         emit(
             currentState.copyWith(message: "Something went wrong. try again!"));
       }
+    } else {
+      emit(currentState.copyWith(message: "Printer Not Connected!"));
     }
   }
 
@@ -227,7 +229,6 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     if (reponse != null && reponse.status == true) {
       if (reponse.status ?? false) {
         emit(currentState.copyWith(message: "Successfully Added"));
-        
       } else {
         emit(
             currentState.copyWith(message: "Not Stored, Something went wrong"));
