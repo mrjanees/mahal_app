@@ -14,6 +14,7 @@ class DateWiseBloc extends Bloc<DateWiseEvent, DateWiseState> {
     on<SelectToDate>(_selectToDate);
     on<FetchDateWiseCollection>(_fetchDateWiseCollection);
     on<CurrentDateWiseCollection>(_currentDateWiseCollection);
+    on<SelectType>(_selectType);
   }
 
   FutureOr<void> _selectFromDate(
@@ -41,10 +42,12 @@ class DateWiseBloc extends Bloc<DateWiseEvent, DateWiseState> {
     if (state is DateWiseLoaded) {
       final currentState = state as DateWiseLoaded;
       emit(DateWiseLoading());
+      log(currentState.type);
       try {
         final response = await SubscriptionRepository().getDateWiseCollection(
           fromDate: DateFormat("yyyy-MM-dd").format(currentState.fromDate),
           toDate: DateFormat("yyyy-MM-dd").format(currentState.toDate),
+          type: currentState.type,
         );
         if (response != null) {
           emit(DateWiseLoaded(
@@ -52,6 +55,7 @@ class DateWiseBloc extends Bloc<DateWiseEvent, DateWiseState> {
             toDate: currentState.toDate,
             collectionData: response.result ?? [],
             total: response.total ?? 00,
+            type: currentState.type,
           ));
         } else {
           emit(DateWiseFailure("No data found for selected dates."));
@@ -67,19 +71,28 @@ class DateWiseBloc extends Bloc<DateWiseEvent, DateWiseState> {
     emit(DateWiseLoading());
     try {
       final response = await SubscriptionRepository().getDateWiseCollection(
-          fromDate: event.fromDate, toDate: event.toDate);
+          fromDate: event.fromDate, toDate: event.toDate, type: event.type);
       if (response != null) {
         emit(DateWiseLoaded(
           collectionData: response.result ?? [],
           fromDate: DateFormat("yyyy-MM-dd").parse(event.fromDate),
           toDate: DateFormat("yyyy-MM-dd").parse(event.toDate),
           total: response.total ?? 00,
+          type: event.type,
         ));
       } else {
         emit(DateWiseFailure("No data found for selected dates."));
       }
     } catch (e) {
       emit(DateWiseFailure("Error fetching data: ${e.toString()}"));
+    }
+  }
+
+  FutureOr<void> _selectType(SelectType event, Emitter<DateWiseState> emit) {
+    if (state is DateWiseLoaded) {
+      final currentState = state as DateWiseLoaded;
+      emit(currentState.copyWith(type: event.type));
+      add(FetchDateWiseCollection());
     }
   }
 }

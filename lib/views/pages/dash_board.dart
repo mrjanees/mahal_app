@@ -123,19 +123,20 @@ class DashBoard extends StatelessWidget {
                     child: OptionTile(
                       icon: 'payment',
                       onTap: () async {
-                        final connection =
-                            await PrintBluetoothThermal.connectionStatus;
-                        final isEnabled =
-                            await PrintBluetoothThermal.bluetoothEnabled;
-                        if (state.isConnected && connection && isEnabled) {
-                          context.push("/subscription");
-                        } else if (!isEnabled) {
-                          customSnackBar(context, "Please Turn on Bluetooth");
-                        } else if (state.isConnected == false ||
-                            connection == false) {
-                          customSnackBar(
-                              context, "Please Connect with Printer");
-                        }
+                        // final connection =
+                        //     await PrintBluetoothThermal.connectionStatus;
+                        // final isEnabled =
+                        //     await PrintBluetoothThermal.bluetoothEnabled;
+                        // if (state.isConnected && connection && isEnabled) {
+                        //   context.push("/subscription");
+                        // } else if (!isEnabled) {
+                        //   customSnackBar(context, "Please Turn on Bluetooth");
+                        // } else if (state.isConnected == false ||
+                        //     connection == false) {
+                        //   customSnackBar(
+                        //       context, "Please Connect with Printer");
+                        // }
+                        context.push("/subscription");
                       },
                       title: 'Monthly House Subscription',
                     ),

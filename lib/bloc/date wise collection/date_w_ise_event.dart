@@ -10,10 +10,16 @@ class SelectToDate extends DateWiseEvent {
   SelectToDate({required this.toDate});
 }
 
+class SelectType extends DateWiseEvent {
+  final String type;
+  SelectType({required this.type});
+}
+
 class CurrentDateWiseCollection extends DateWiseEvent {
   final String fromDate;
   final String toDate;
-  CurrentDateWiseCollection(this.fromDate, this.toDate);
+  final String type;
+  CurrentDateWiseCollection(this.fromDate, this.toDate, this.type);
 }
 
 class FetchDateWiseCollection extends DateWiseEvent {}

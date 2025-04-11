@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:mahal_app/core/apis.dart';
 import 'package:mahal_app/model/subscription/subscription_add.dart';
@@ -21,6 +22,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     on<DisconnectPrinter>(_onDisconnectPrinter);
     on<PrintReceipt>(_printReceipt);
     on<CheckConnection>(_onConnectionCheck);
+    on<SubmitReceipt>(_submitReceipt);
   }
 
   Future<void> _onInitPrinter(
@@ -214,5 +216,24 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
 
     bytes += generator.cut();
     return bytes;
+  }
+
+  FutureOr<void> _submitReceipt(
+      SubmitReceipt event, Emitter<PrinterState> emit) async {
+    final currentState = state as PrinterLoaded;
+    emit(PrinterLoading());
+    final reponse =
+        await SubscriptionRepository().addSubcription(event.subscriptioData);
+    if (reponse != null && reponse.status == true) {
+      if (reponse.status ?? false) {
+        emit(currentState.copyWith(message: "Successfully Added"));
+        
+      } else {
+        emit(
+            currentState.copyWith(message: "Not Stored, Something went wrong"));
+      }
+    } else {
+      emit(currentState.copyWith(message: "Something went wrong. try again!"));
+    }
   }
 }

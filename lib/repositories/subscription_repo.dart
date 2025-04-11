@@ -28,7 +28,7 @@ class SubscriptionRepository {
   Future<CommonResponse?> addSubcription(SubscriptionAdd addData) async {
     try {
       final response = await dio.post(APIs.addSubscription, queryParameters: {
-        "houseno": addData.houseNo,
+        "houseno": "1000",
         "type": addData.type,
         "month": addData.month,
         "year": addData.year,
@@ -48,12 +48,18 @@ class SubscriptionRepository {
   }
 
   Future<HouseDetialsList?> getDateWiseCollection(
-      {required String fromDate, required String toDate}) async {
+      {required String fromDate,
+      required String toDate,
+      required String type}) async {
     log("From Date: $fromDate");
     log("to Date: $toDate");
     try {
       final response = await dio.get(APIs.getSubsDetailsByDateWise,
-          queryParameters: {"datefrom": fromDate, "dateto": toDate});
+          queryParameters: {
+            "datefrom": fromDate,
+            "dateto": toDate,
+            "type": type
+          });
       log(response.data.toString());
       if (response.statusCode == 200 || response.statusCode == 201) {
         return HouseDetialsList.fromJson(jsonDecode(response.data));

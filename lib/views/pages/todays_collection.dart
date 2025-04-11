@@ -8,6 +8,7 @@ import 'package:mahal_app/bloc/date%20wise%20collection/date_w_ise_bloc.dart';
 import 'package:mahal_app/bloc/date%20wise%20collection/date_w_ise_event.dart';
 import 'package:mahal_app/bloc/date%20wise%20collection/date_w_ise_state.dart';
 import 'package:mahal_app/core/color.dart';
+import 'package:mahal_app/core/cost_value.dart';
 import 'package:mahal_app/model/subscription/huse_details.dart';
 import 'package:mahal_app/views/widgets/common/app_bar.dart';
 import 'package:mahal_app/views/widgets/common/custom_date_selection.dart';
@@ -22,8 +23,8 @@ class DateWiseCollection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          DateWiseBloc()..add(CurrentDateWiseCollection(dateNow, dateNow)),
+      create: (context) => DateWiseBloc()
+        ..add(CurrentDateWiseCollection(dateNow, dateNow, 'all')),
       child: SafeArea(
         child: Scaffold(
           appBar: PreferredSize(
@@ -67,21 +68,34 @@ class DateWiseCollection extends StatelessWidget {
                           const SizedBox(
                             height: 10,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const CustomText(
-                                "Total RS: ",
-                                color: AppColors.primaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              CustomText(
-                                state.total.toString(),
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              )
-                            ],
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: kSpace),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    const CustomText(
+                                      "Total RS: ",
+                                      color: AppColors.primaryColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    CustomText(
+                                      state.total.toString(),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    )
+                                  ],
+                                ),
+                                customDropDowm(
+                                    onChanged: (String value) {
+                                      selectTypeValue(value, context);
+                                    },
+                                    value: state.type),
+                              ],
+                            ),
                           )
                         ],
                       );
@@ -161,6 +175,13 @@ class DateWiseCollection extends StatelessWidget {
     }
   }
 
+  void selectTypeValue(String? value, BuildContext context) {
+    if (value != null && value.isNotEmpty) {
+      log(value.toString());
+      context.read<DateWiseBloc>().add(SelectType(type: value));
+    }
+  }
+
   /// Function to Pick "To Date" (must be after or equal to From Date)
   Future<void> _pickToDate(
       BuildContext context, DateTime fromDate, DateTime toDate) async {
@@ -175,5 +196,43 @@ class DateWiseCollection extends StatelessWidget {
       final dateString = DateFormat('yyyy-MM-dd').format(picked);
       context.read<DateWiseBloc>().add(SelectToDate(toDate: dateString));
     }
+  }
+
+  Widget customDropDowm(
+      {required Function(String value) onChanged, required String value}) {
+    return DropdownButton(
+        isDense: true,
+        padding: EdgeInsets.zero,
+        style: const TextStyle(color: AppColors.whiteColor),
+        iconEnabledColor: AppColors.primaryColor,
+        value: value,
+        underline: const SizedBox(),
+        icon: const Icon(Icons.filter_alt),
+        items: const [
+          DropdownMenuItem(
+            value: "all",
+            child: CustomText(
+              "All",
+              color: AppColors.black,
+            ),
+          ),
+          DropdownMenuItem(
+            value: "madrassa",
+            child: CustomText(
+              "AL Madrassa",
+              color: AppColors.black,
+            ),
+          ),
+          DropdownMenuItem(
+            value: "masjid",
+            child: CustomText(
+              "Masjid",
+              color: AppColors.black,
+            ),
+          )
+        ],
+        onChanged: (f) {
+          onChanged(f!);
+        });
   }
 }

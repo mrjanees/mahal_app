@@ -33,3 +33,8 @@ class PrintReceipt extends PrinterEvent {
   SubscriptionAdd receiptData;
   PrintReceipt(this.receiptData);
 }
+
+class SubmitReceipt extends PrinterEvent {
+  SubscriptionAdd subscriptioData;
+  SubmitReceipt(this.subscriptioData);
+}

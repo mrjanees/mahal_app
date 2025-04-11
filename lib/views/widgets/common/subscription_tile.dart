@@ -66,10 +66,12 @@ class SubscriptionTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const CustomText(
-                          "Fmaily Name ",
+                          "Fmaily Name : ",
                           color: AppColors.black38,
                         ),
-                        CustomText(": $familyName", color: AppColors.black),
+                        Flexible(
+                            child:
+                                CustomText(familyName, color: AppColors.black)),
                       ],
                     )
                   : const SizedBox(),
@@ -78,10 +80,12 @@ class SubscriptionTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const CustomText(
-                          "Family Head ",
+                          "Family Head : ",
                           color: AppColors.black38,
                         ),
-                        CustomText(": $familyHead", color: AppColors.black),
+                        Flexible(
+                            child:
+                                CustomText(familyHead, color: AppColors.black)),
                       ],
                     )
                   : const SizedBox(),

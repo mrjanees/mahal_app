@@ -31,6 +31,11 @@ class SubscriptionPrinting extends StatelessWidget {
         listener: (context, state) {
           if (state is PrinterLoaded) {
             customSnackBar(context, state.message);
+            if (state.message == "Successfully Added" ||
+                state.message == "Printed Successfully") {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            }
           }
         },
         builder: (context, state) {
@@ -160,6 +165,7 @@ class SubscriptionPrinting extends StatelessWidget {
                     const SizedBox(
                       height: kSpace * 2,
                     ),
+
                     Align(
                         alignment: Alignment.center,
                         child: CustomButton(
@@ -169,6 +175,22 @@ class SubscriptionPrinting extends StatelessWidget {
                                   .add(PrintReceipt(addSubscriptionData));
                             },
                             title: "SUBMIT AND PRINT")),
+                    const SizedBox(
+                      height: kSpace,
+                    ),
+                    const Divider(),
+                    const SizedBox(
+                      height: kSpace,
+                    ),
+                    Align(
+                        alignment: Alignment.center,
+                        child: CustomButton(
+                            onTap: () {
+                              context
+                                  .read<PrinterBloc>()
+                                  .add(PrintReceipt(addSubscriptionData));
+                            },
+                            title: "SUBMIT")),
                     const SizedBox(
                       height: kSpace * 3,
                     ),
