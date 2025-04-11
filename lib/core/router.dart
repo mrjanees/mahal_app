@@ -8,7 +8,7 @@ import 'package:mahal_app/views/pages/prinitng.dart';
 import 'package:mahal_app/views/pages/subscription.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/login',
   routes: [
     GoRoute(
       path: '/login',
