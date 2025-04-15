@@ -27,11 +27,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     if (response != null) {
       if (response.familyhead != null) {
         emit(HouseDetailsLoaded(
-          response,
-          Selection.masjid,
-          DateTime.now().year,
-          const {},
-        ));
+            response, Selection.madhrasa, DateTime.now().year, const {}, 0));
       } else {
         emit(HouseDetailsFailure('No House.'));
       }
@@ -49,6 +45,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         event.selection,
         currentState.selectedYear,
         currentState.selectedMonths,
+        currentState.monthlyAmount,
       ));
     }
   }
@@ -58,11 +55,11 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     if (state is HouseDetailsLoaded) {
       final currentState = state as HouseDetailsLoaded;
       emit(HouseDetailsLoaded(
-        currentState.houseDetials,
-        currentState.selectedValue,
-        event.year,
-        currentState.selectedMonths,
-      ));
+          currentState.houseDetials,
+          currentState.selectedValue,
+          event.year,
+          currentState.selectedMonths,
+          currentState.monthlyAmount));
     }
   }
 
@@ -82,6 +79,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         currentState.selectedValue,
         currentState.selectedYear,
         updatedMonths,
+        currentState.monthlyAmount,
       ));
     }
   }

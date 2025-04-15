@@ -12,12 +12,14 @@ class HouseDetailsLoaded extends SubscriptionState {
   final Selection selectedValue;
   final int selectedYear;
   final Set<String> selectedMonths;
+   final double monthlyAmount;
 
   HouseDetailsLoaded(
     this.houseDetials,
     this.selectedValue,
     this.selectedYear,
     this.selectedMonths,
+    this.monthlyAmount,
   );
 }
 

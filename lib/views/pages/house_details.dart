@@ -40,176 +40,174 @@ class HouseDetails extends StatelessWidget {
           )),
       body: BlocConsumer<SubscriptionBloc, SubscriptionState>(
           builder: (context, state) {
-            log("bloc Consumer rebuild");
-            return Center(
-              child: state is HouseDetialsLoading
-                  ? const CustomText("Detials Loading")
-                  : state is HouseDetailsLoaded
-                      ? SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Form(
-                              key: formGlobalKey,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+        log("bloc Consumer rebuild");
+        return Center(
+          child: state is HouseDetialsLoading
+              ? const CustomText("Detials Loading")
+              : state is HouseDetailsLoaded
+                  ? SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Form(
+                          key: formGlobalKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              houseDetails(state.houseDetials, context),
+                              const SizedBox(
+                                height: kSpace * 2,
+                              ),
+                              Align(
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // toggleButton(context, "Masjid",
+                                    //     Selection.masjid, state.selectedValue),
+                                    // const SizedBox(
+                                    //   width: kSpace,
+                                    // ),
+                                    toggleButton(
+                                        context,
+                                        "Madrasa",
+                                        Selection.madhrasa,
+                                        state.selectedValue),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: kSpace * 2,
+                              ),
+                              Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: AppColors.whiteColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(
+                                          0.1), // Shadow color with opacity
+                                      spreadRadius:
+                                          1, // How much the shadow spreads
+                                      blurRadius: 8, // Blur effect
+                                      offset: const Offset(
+                                          0, 3), // Shadow position (x, y)
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    yearDropdown(context, state.selectedYear),
+                                    const Divider(),
+                                    monthSelectionGrid(
+                                        context, state.selectedMonths),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: kSpace * 2,
+                              ),
+                              const CustomText(
+                                "Amount",
+                                fontWeight: FontWeight.bold,
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  houseDetails(state.houseDetials, context),
                                   const SizedBox(
-                                    height: kSpace * 2,
+                                    width: 10,
                                   ),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        toggleButton(
-                                            context,
-                                            "Masjid",
-                                            Selection.masjid,
-                                            state.selectedValue),
-                                        const SizedBox(
-                                          width: kSpace,
-                                        ),
-                                        toggleButton(
-                                            context,
-                                            "HI Madrasa",
-                                            Selection.madhrasa,
-                                            state.selectedValue),
-                                      ],
-                                    ),
+                                  CustomSvgImage(
+                                    imageName: "rupees",
+                                    width: 30,
                                   ),
                                   const SizedBox(
-                                    height: kSpace * 2,
+                                    width: 10,
                                   ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: AppColors.whiteColor,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(
-                                              0.1), // Shadow color with opacity
-                                          spreadRadius:
-                                              1, // How much the shadow spreads
-                                          blurRadius: 8, // Blur effect
-                                          offset: const Offset(
-                                              0, 3), // Shadow position (x, y)
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        yearDropdown(
-                                            context, state.selectedYear),
-                                        const Divider(),
-                                        monthSelectionGrid(
-                                            context, state.selectedMonths),
-                                      ],
-                                    ),
+                                  Flexible(
+                                    child: CustomTextField(
+                                        textEditingController: amountCtrl,
+                                        name: "amount",
+                                        isThisFieldRequired: true),
                                   ),
-                                  const SizedBox(
-                                    height: kSpace * 2,
-                                  ),
-                                  const CustomText(
-                                    "Amount",
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      CustomSvgImage(
-                                        imageName: "rupees",
-                                        width: 30,
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Flexible(
-                                        child: CustomTextField(
-                                            textEditingController: amountCtrl,
-                                            name: "amount",
-                                            isThisFieldRequired: true),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: kSpace,
-                                  ),
-                                  Align(
-                                      alignment: Alignment.center,
-                                      child: CustomButton(
-                                          onTap: () {
-                                            // context.read<SubscriptionBloc>().add(
-                                            //     SaveButtonPress(SubscriptionAdd(
-                                            //         state.houseDetials.houseno
-                                            //             .toString(),
-                                            //         state.selectedValue.name,
-                                            //         state.selectedMonths.toList(),
-                                            //         state.selectedYear.toString(),
-                                            //         nowDate,
-                                            //         amountCtrl.text.trim())));
-                                            if (formGlobalKey.currentState!
-                                                .validate()) {
-                                              if (state
-                                                  .selectedMonths.isNotEmpty) {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          SubscriptionPrinting(
-                                                            addSubscriptionData: SubscriptionAdd(
-                                                                state.houseDetials
-                                                                    .houseno
-                                                                    .toString(),
-                                                                state
-                                                                    .selectedValue
-                                                                    .name,
-                                                                state
-                                                                    .selectedMonths
-                                                                    .toList(),
-                                                                state
-                                                                    .selectedYear
-                                                                    .toString(),
-                                                                state
-                                                                    .houseDetials
-                                                                    .familyname
-                                                                    .toString(),
-                                                                state
-                                                                    .houseDetials
-                                                                    .familyhead
-                                                                    .toString(),
-                                                                nowDate,
-                                                                amountCtrl
-                                                                    .text),
-                                                          )),
-                                                );
-                                              } else {
-                                                customSnackBar(context,
-                                                    "Please Select Month");
-                                              }
-                                            }
-                                          },
-                                          title: "Save"))
                                 ],
                               ),
-                            ),
+                              const SizedBox(
+                                height: kSpace,
+                              ),
+                              Align(
+                                  alignment: Alignment.center,
+                                  child: CustomButton(
+                                      onTap: () {
+                                        // context.read<SubscriptionBloc>().add(
+                                        //     SaveButtonPress(SubscriptionAdd(
+                                        //         state.houseDetials.houseno
+                                        //             .toString(),
+                                        //         state.selectedValue.name,
+                                        //         state.selectedMonths.toList(),
+                                        //         state.selectedYear.toString(),
+                                        //         nowDate,
+                                        //         amountCtrl.text.trim())));
+                                        if (formGlobalKey.currentState!
+                                            .validate()) {
+                                          if (state.selectedMonths.isNotEmpty) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SubscriptionPrinting(
+                                                        addSubscriptionData: SubscriptionAdd(
+                                                            state.houseDetials
+                                                                .houseno
+                                                                .toString(),
+                                                            state.selectedValue
+                                                                .name,
+                                                            state.selectedMonths
+                                                                .toList(),
+                                                            state.selectedYear
+                                                                .toString(),
+                                                            state.houseDetials
+                                                                .familyname
+                                                                .toString(),
+                                                            state.houseDetials
+                                                                .familyhead
+                                                                .toString(),
+                                                            nowDate,
+                                                            amountCtrl.text),
+                                                      )),
+                                            );
+                                          } else {
+                                            customSnackBar(
+                                                context, "Please Select Month");
+                                          }
+                                        }
+                                      },
+                                      title: "Save"))
+                            ],
                           ),
-                        )
-                      : state is HouseDetailsFailure
+                        ),
+                      ),
+                    )
+                  : state is HouseDetailsFailure
+                      ? CustomText(state.message)
+                      : state is HouseDetailsError
                           ? CustomText(state.message)
-                          : state is HouseDetailsError
-                              ? CustomText(state.message)
-                              : const SizedBox(),
-            );
-          },
-          listener: (context, state) {}),
+                          : const SizedBox(),
+        );
+      }, listener: (context, state) {
+        if (state is HouseDetailsLoaded) {
+          final selectedCount = state.selectedMonths.toList().length;
+          log(selectedCount.toString());
+          final totalAmount =
+              selectedCount * int.parse(state.houseDetials.familyAmount ?? "0");
+
+          log(totalAmount.toString());
+          // Update the controller
+          amountCtrl.text = totalAmount.toString();
+        }
+      }),
     );
   }
 
@@ -285,6 +283,25 @@ class HouseDetails extends StatelessWidget {
                 Flexible(
                   child: CustomText(
                     ": ${details.familyname} ",
+                    color: AppColors.black,
+                    maxLines: 3,
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: kSpace,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CustomText(
+                  "Fmaily Amount",
+                  color: AppColors.black54,
+                ),
+                Flexible(
+                  child: CustomText(
+                    ": ${details.familyAmount} ",
                     color: AppColors.black,
                     maxLines: 3,
                   ),

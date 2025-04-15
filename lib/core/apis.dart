@@ -1,7 +1,7 @@
-const String mahalName = "NUSRATHUL ISLAM\nMAHALLU KARATHUR";
+const String mahalName = "NOORUL HUDHA MADRASA\n(A) BRANCH, PALLIPPARAMB\nTIRURANGADI";
 
 class APIs {
-  static const String baseUrl = "https://www.karathurmahallu.com/api/";
+  static const String baseUrl = "https://nhmabranchtgi.com/api/";
   static const String login = "${baseUrl}login_action_admin.php";
   static const String getSubsDetlsHouseByNumber =
       "${baseUrl}get_subscription.php";
