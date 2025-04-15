@@ -28,7 +28,7 @@ class SubscriptionRepository {
   Future<CommonResponse?> addSubcription(SubscriptionAdd addData) async {
     try {
       final response = await dio.post(APIs.addSubscription, queryParameters: {
-        "houseno": "1000",
+        "houseno": addData.houseNo,
         "type": addData.type,
         "month": addData.month,
         "year": addData.year,

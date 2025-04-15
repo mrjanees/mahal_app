@@ -188,7 +188,7 @@ class SubscriptionPrinting extends StatelessWidget {
                             onTap: () {
                               context
                                   .read<PrinterBloc>()
-                                  .add(PrintReceipt(addSubscriptionData));
+                                  .add(SubmitReceipt(addSubscriptionData));
                             },
                             title: "SUBMIT")),
                     const SizedBox(
