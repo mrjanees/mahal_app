@@ -89,11 +89,11 @@ class DateWiseCollection extends StatelessWidget {
                                     )
                                   ],
                                 ),
-                                customDropDowm(
-                                    onChanged: (String value) {
-                                      selectTypeValue(value, context);
-                                    },
-                                    value: state.type),
+                                // customDropDowm(
+                                //     onChanged: (String value) {
+                                //       selectTypeValue(value, context);
+                                //     },
+                                //     value: state.type),
                               ],
                             ),
                           )
