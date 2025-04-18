@@ -1,30 +1,9 @@
 class HouseDetials {
-  String? familyhead;
-  String? familyname;
-  String? houseno;
-  String? familyAmount;
   List<Subscription>? subscription;
 
-  HouseDetials(
-      {this.familyhead,
-      this.familyname,
-      this.houseno,
-      this.familyAmount,
-      this.subscription});
+  HouseDetials({this.subscription});
 
   HouseDetials.fromJson(Map<String, dynamic> json) {
-    if (json["familyhead"] is String) {
-      familyhead = json["familyhead"];
-    }
-    if (json["familyname"] is String) {
-      familyname = json["familyname"];
-    }
-    if (json["houseno"] is String) {
-      houseno = json["houseno"];
-    }
-    if (json["family_amount"] is String) {
-      familyAmount = json["family_amount"];
-    }
     if (json["subscription"] is List) {
       subscription = json["subscription"] == null
           ? null
@@ -40,9 +19,7 @@ class HouseDetials {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data["familyhead"] = familyhead;
-    data["familyname"] = familyname;
-    data["houseno"] = houseno;
+
     if (subscription != null) {
       data["subscription"] = subscription?.map((e) => e.toJson()).toList();
     }

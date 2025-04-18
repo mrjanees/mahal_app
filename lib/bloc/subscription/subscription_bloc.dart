@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:mahal_app/model/subscription/house_details_list.dart';
+import 'package:mahal_app/model/subscription/house_basic_details.dart';
 import 'package:mahal_app/model/subscription/huse_details.dart';
-import 'package:mahal_app/model/subscription/subscription_add.dart';
 import 'package:mahal_app/repositories/subscription_repo.dart';
 import 'package:meta/meta.dart';
 
@@ -22,18 +21,30 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   FutureOr<void> _getHouseDetails(
       GetHouseDetails event, Emitter<SubscriptionState> emit) async {
     emit(HouseDetialsLoading());
-    final response =
-        await subscriptionRepo.getHouseDetials(houseNo: event.houseNo);
-    if (response != null) {
-      if (response.familyhead != null) {
-        emit(HouseDetailsLoaded(
-            response, Selection.madhrasa, DateTime.now().year, const {}, 0));
-      } else {
-        emit(HouseDetailsFailure('No House.'));
-      }
-    } else {
-      emit(HouseDetailsError("Somthing went wrong!"));
+
+    final basicDetails =
+        await subscriptionRepo.getHouseBasicDetials(houseNo: event.houseNo);
+
+    if (basicDetails == null) {
+      emit(HouseDetailsError("Something went wrong in basic details!"));
+      return;
     }
+
+    if (basicDetails.familyhead == null) {
+      emit(HouseDetailsFailure('No basic house details.'));
+      return;
+    }
+
+    final subscription =
+        await subscriptionRepo.getHouseDetials(houseNo: event.houseNo);
+
+    if (subscription == null) {
+      emit(HouseDetailsError("Something went wrong in full details!"));
+      return;
+    }
+
+    emit(HouseDetailsLoaded(subscription, Selection.madhrasa,
+        DateTime.now().year, const {}, 0, basicDetails));
   }
 
   FutureOr<void> _toggleButtonPress(
@@ -41,12 +52,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     if (state is HouseDetailsLoaded) {
       final currentState = state as HouseDetailsLoaded;
       emit(HouseDetailsLoaded(
-        currentState.houseDetials,
-        event.selection,
-        currentState.selectedYear,
-        currentState.selectedMonths,
-        currentState.monthlyAmount,
-      ));
+          currentState.houseDetials,
+          event.selection,
+          currentState.selectedYear,
+          currentState.selectedMonths,
+          currentState.monthlyAmount,
+          currentState.houseBasicDetails));
     }
   }
 
@@ -59,7 +70,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
           currentState.selectedValue,
           event.year,
           currentState.selectedMonths,
-          currentState.monthlyAmount));
+          currentState.monthlyAmount,
+          currentState.houseBasicDetails));
     }
   }
 
@@ -75,12 +87,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         updatedMonths.add(event.month);
       }
       emit(HouseDetailsLoaded(
-        currentState.houseDetials,
-        currentState.selectedValue,
-        currentState.selectedYear,
-        updatedMonths,
-        currentState.monthlyAmount,
-      ));
+          currentState.houseDetials,
+          currentState.selectedValue,
+          currentState.selectedYear,
+          updatedMonths,
+          currentState.monthlyAmount,
+          currentState.houseBasicDetails));
     }
   }
 

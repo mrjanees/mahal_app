@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:mahal_app/core/apis.dart';
 import 'package:mahal_app/core/cost_value.dart';
 import 'package:mahal_app/model/common/common_response.dart';
+import 'package:mahal_app/model/subscription/house_basic_details.dart';
 import 'package:mahal_app/model/subscription/house_details_list.dart';
 import 'package:mahal_app/model/subscription/huse_details.dart';
 import 'package:mahal_app/model/subscription/subscription_add.dart';
@@ -24,6 +25,23 @@ class SubscriptionRepository {
       return null;
     }
   }
+
+  Future<HouseBasicDetails?> getHouseBasicDetials({required String houseNo}) async {
+    try {
+      final response = await dio.get(APIs.getHouseBasicDetails,
+          queryParameters: {"houseno": houseNo});
+      log(response.data.toString());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return HouseBasicDetails.fromJson(jsonDecode(response.data));
+      } else {
+        return HouseBasicDetails.fromJson(jsonDecode(response.data));
+      }
+    } on DioException catch (e) {
+      log(e.toString());
+      return null;
+    }
+  }
+
 
   Future<CommonResponse?> addSubcription(SubscriptionAdd addData) async {
     try {

@@ -1,4 +1,5 @@
-const String mahalName = "NOORUL HUDHA MADRASA\n(A) BRANCH, PALLIPPARAMB\nTIRURANGADI";
+const String mahalName =
+    "NOORUL HUDHA MADRASA\n(A) BRANCH, PALLIPPARAMB\nTIRURANGADI";
 
 class APIs {
   static const String baseUrl = "https://nhmabranchtgi.com/api/";
@@ -11,4 +12,5 @@ class APIs {
       "${baseUrl}get_subscription_today_collection.php";
 
   static const String addSubscription = "${baseUrl}add_subscription.php";
+  static const String getHouseBasicDetails = "${baseUrl}get_profile_family.php";
 }

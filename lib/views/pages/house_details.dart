@@ -7,7 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:mahal_app/bloc/subscription/subscription_bloc.dart';
 import 'package:mahal_app/core/color.dart';
 import 'package:mahal_app/core/cost_value.dart';
-import 'package:mahal_app/model/subscription/huse_details.dart';
+import 'package:mahal_app/model/subscription/house_basic_details.dart';
+import 'package:mahal_app/model/subscription/huse_details.dart' as houseDetils;
 import 'package:mahal_app/model/subscription/subscription_add.dart';
 import 'package:mahal_app/utils/snack_bar.dart';
 import 'package:mahal_app/views/pages/prinitng.dart';
@@ -53,7 +54,8 @@ class HouseDetails extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              houseDetails(state.houseDetials, context),
+                              houseDetails(state.houseBasicDetails,
+                                  state.houseDetials, context),
                               const SizedBox(
                                 height: kSpace * 2,
                               ),
@@ -159,7 +161,8 @@ class HouseDetails extends StatelessWidget {
                                                   builder: (context) =>
                                                       SubscriptionPrinting(
                                                         addSubscriptionData: SubscriptionAdd(
-                                                            state.houseDetials
+                                                            state
+                                                                .houseBasicDetails
                                                                 .houseno
                                                                 .toString(),
                                                             state.selectedValue
@@ -168,10 +171,12 @@ class HouseDetails extends StatelessWidget {
                                                                 .toList(),
                                                             state.selectedYear
                                                                 .toString(),
-                                                            state.houseDetials
+                                                            state
+                                                                .houseBasicDetails
                                                                 .familyname
                                                                 .toString(),
-                                                            state.houseDetials
+                                                            state
+                                                                .houseBasicDetails
                                                                 .familyhead
                                                                 .toString(),
                                                             nowDate,
@@ -184,7 +189,10 @@ class HouseDetails extends StatelessWidget {
                                           }
                                         }
                                       },
-                                      title: "Save"))
+                                      title: "Save")),
+                              const SizedBox(
+                                height: kSpace * 2,
+                              )
                             ],
                           ),
                         ),
@@ -201,7 +209,7 @@ class HouseDetails extends StatelessWidget {
           final selectedCount = state.selectedMonths.toList().length;
           log(selectedCount.toString());
           final totalAmount =
-              selectedCount * int.parse(state.houseDetials.familyAmount ?? "0");
+              selectedCount * int.parse(state.houseBasicDetails.amount ?? "0");
 
           log(totalAmount.toString());
           // Update the controller
@@ -211,7 +219,8 @@ class HouseDetails extends StatelessWidget {
     );
   }
 
-  Widget houseDetails(HouseDetials details, BuildContext context) {
+  Widget houseDetails(HouseBasicDetails basicDetails,
+      houseDetils.HouseDetials subscriptionDetails, BuildContext context) {
     return Container(
         padding: const EdgeInsets.all(kSpace),
         decoration: BoxDecoration(
@@ -245,7 +254,7 @@ class HouseDetails extends StatelessWidget {
                     color: AppColors.black54,
                   ),
                   CustomText(
-                    ": ${details.houseno}",
+                    ": ${basicDetails.houseno}",
                     color: AppColors.black,
                   ),
                 ],
@@ -263,7 +272,7 @@ class HouseDetails extends StatelessWidget {
                 ),
                 Flexible(
                   child: CustomText(
-                    ": ${details.familyhead}  ",
+                    ": ${basicDetails.familyhead}  ",
                     maxLines: 3,
                     color: AppColors.black,
                   ),
@@ -282,7 +291,7 @@ class HouseDetails extends StatelessWidget {
                 ),
                 Flexible(
                   child: CustomText(
-                    ": ${details.familyname} ",
+                    ": ${basicDetails.familyname} ",
                     color: AppColors.black,
                     maxLines: 3,
                   ),
@@ -301,7 +310,7 @@ class HouseDetails extends StatelessWidget {
                 ),
                 Flexible(
                   child: CustomText(
-                    ": ${details.familyAmount} ",
+                    ": ${basicDetails.amount} ",
                     color: AppColors.black,
                     maxLines: 3,
                   ),
@@ -342,7 +351,8 @@ class HouseDetails extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => SubscriptionHistory(
-                            subscriptionList: details.subscription ?? [])),
+                            subscriptionList:
+                                subscriptionDetails.subscription ?? [])),
                   );
                 },
                 title: "View History",
